@@ -26,4 +26,10 @@ func TestIntegers(t *testing.T) {
 	if i16 != 1 { t.Error() }
 	if i32 != 1 { t.Error() }
 	if i64 != 1 { t.Error() }
+
+	var f32 float32 = 1.0
+	var f64 = 1.0
+
+	if f32 != 1.0 { t.Error() }
+	if f64 != 1.0 { t.Error() }
 }
