@@ -39,3 +39,39 @@ func TestStrings(t *testing.T) {
 	if "Go"[0] != 'G' { t.Error() }
 	if "Go" + "lang" != "Golang" { t.Error() }
 }
+
+func TestArrays(t *testing.T) {
+	arr := [6]int{ 0, 1, 2, 3, 4, 5 }
+	for i := 0; i < len(arr); i++ {
+		if (arr[i] < 0) { t.Error() }
+	}
+	for _, value := range arr {
+		if (value < 0) { t.Error() }
+	}
+}
+
+func TestSlices(t *testing.T) {
+	// make
+	s1 := make([]int, 3, 5)
+	for _, value := range s1 {
+		if (value != 0) { t.Error() }
+	}
+	if len(s1) != 3 { t.Error(len(s1)) }
+	if cap(s1) != 5 { t.Error(cap(s1)) }
+
+	// append
+	s2 := []int{ 0 }
+	s3 := append(s2, 0, 0)
+	for i, value := range s1 {
+		if value != s3[i] { t.Errorf("%d != %d", value, s3[i]) }
+	}
+
+	// copy
+	s4 := make([]int, 2)
+	copy(s1, s4)
+	if len(s4) != 2 { t.Error(len(s4)) }
+	if cap(s4) != 2 { t.Error(len(s4)) }
+	for _, value := range s4 {
+		if value != 0 { t.Error(value) }
+	}
+}
