@@ -1,4 +1,4 @@
-# Learning Go
+# Learning Go [![Build Status][travis-img]][travis]
 
 Install Go on macOS:
 
@@ -14,3 +14,6 @@ Check Go version:
   <https://github.com/travis-ci-examples/go-example>
 - Go, "Package testing", _Golang"_, 2019.
   <https://golang.org/pkg/testing/>
+
+[travis]: https://travis-ci.org/mincong-h/learning-go
+[travis-img]: https://travis-ci.org/mincong-h/learning-go.svg?branch=master
