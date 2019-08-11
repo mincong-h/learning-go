@@ -75,3 +75,23 @@ func TestSlices(t *testing.T) {
 		if value != 0 { t.Error(value) }
 	}
 }
+
+func TestMaps(t *testing.T) {
+	// make
+	map1 := make(map[string]int)
+	map1["one"] = 1
+	map1["two"] = 2
+	if map1["one"] != 1 || map1["two"] != 2 { t.Error() }
+
+	// delete
+	delete(map1, "one")
+	if _, exist := map1["one"]; exist { t.Error() }
+	if _, exist := map1["two"]; !exist { t.Error() }
+
+	// anther declaration
+	map2 := map[string]int{
+		"one": 1,
+		"two": 2,
+	}
+	if map2["one"] != 1 || map2["two"] != 2 { t.Error() }
+}
