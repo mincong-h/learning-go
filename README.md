@@ -12,7 +12,7 @@ Check Go version:
 
 - Dan Buch, "travis-ci-examples/go-example", _GitHub_, 2019.
   <https://github.com/travis-ci-examples/go-example>
-- Go, "Package testing", _Golang"_, 2019.
+- Go, "Package testing", _Golang_, 2019.
   <https://golang.org/pkg/testing/>
 
 [travis]: https://travis-ci.org/mincong-h/learning-go
