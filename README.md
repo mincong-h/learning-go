@@ -8,6 +8,16 @@ Check Go version:
 
     $ go version
 
+## Testing
+
+Run test:
+
+    $ go test
+
+Run test with verbose mode:
+
+    $ go test -v
+
 ## References
 
 - Dan Buch, "travis-ci-examples/go-example", _GitHub_, 2019.
