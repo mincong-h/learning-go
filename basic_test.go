@@ -149,3 +149,17 @@ func TestMaps(t *testing.T) {
 		t.Error()
 	}
 }
+
+func TestPointers(t *testing.T) {
+	swap := func(xPtr *int, yPtr *int) {
+		v := *xPtr
+		*xPtr = *yPtr
+		*yPtr = v
+	}
+	x := 1
+	y := 2
+	swap(&x, &y)
+	if x != 2 || y != 1 {
+		t.Errorf("x=%d, y=%d", x, y)
+	}
+}
