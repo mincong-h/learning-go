@@ -33,3 +33,9 @@ func TestIntegers(t *testing.T) {
 	if f32 != 1.0 { t.Error() }
 	if f64 != 1.0 { t.Error() }
 }
+
+func TestStrings(t *testing.T) {
+	if len("Go") != 2 { t.Error() }
+	if "Go"[0] != 'G' { t.Error() }
+	if "Go" + "lang" != "Golang" { t.Error() }
+}
