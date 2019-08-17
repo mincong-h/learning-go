@@ -1,5 +1,16 @@
 # Learning Go [![Build Status][travis-img]][travis]
 
+Learning Go using book **"Introducing Go"**, written by Caleb Doxsey, and other
+online materials.
+
+<p align="center">
+  <a href="https://amzn.to/31Mz7E1">
+    <img src="img/introducing-go.jpg" width="200" alt="Caleb Doxsey, Introducing Go" />
+  </a>
+</p>
+
+## Installation
+
 Install Go on macOS:
 
     $ brew install go
