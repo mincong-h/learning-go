@@ -56,7 +56,7 @@ func TestIntegers(t *testing.T) {
 	}
 }
 
-func TestStrings(t *testing.T) {
+func TestString(t *testing.T) {
 	if len("Go") != 2 {
 		t.Error()
 	}
