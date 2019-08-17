@@ -2,6 +2,7 @@ package main
 
 import "testing"
 import "strings"
+import "os"
 
 func TestStrings(t *testing.T) {
 	if !strings.Contains("test", "es") {
@@ -26,6 +27,23 @@ func TestStrings(t *testing.T) {
 		t.Error()
 	}
 	if strings.Repeat("6", 3) != "666" {
+		t.Error()
+	}
+}
+
+func TestIO(t *testing.T) {
+	file, err := os.Open("README.md")
+	if err != nil {
+		t.Error()
+	}
+	defer file.Close()
+
+	// get the file size
+	stat, err := file.Stat()
+	if err != nil {
+		t.Error()
+	}
+	if stat.Size() <= 0 {
 		t.Error()
 	}
 }
