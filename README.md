@@ -33,6 +33,8 @@ The source code is formatted automatically using
   <https://golang.org/pkg/testing/>
 - Andrew Gerrand, "go fmt your code", _Golang_, 2013.
   <https://blog.golang.org/go-fmt-your-code>
+- Mark McGranaghan, "Go by Example", _gobyexample_, 2019.
+  <https://gobyexample.com/>
 
 [travis]: https://travis-ci.org/mincong-h/learning-go
 [travis-img]: https://travis-ci.org/mincong-h/learning-go.svg?branch=master

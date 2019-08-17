@@ -9,16 +9,22 @@ func TestStructs(t *testing.T) {
 		t.Error()
 	}
 
-	paris := Location{Country: "France", City: "Paris"}
-	user := User{Name: "Tom", Location: paris}
+	paris := City{Country: "France", Name: "Paris"}
+	user := User{Name: "Tom", City: paris}
 
-	if user.Location.Country != "France" {
+	if user.City.Country != "France" {
 		t.Error()
 	}
-	if user.Location.City != "Paris" {
+	if user.City.Name != "Paris" {
 		t.Error()
 	}
 	if user.Name != "Tom" {
+		t.Error()
+	}
+	if paris.repr() != "Paris, France" {
+		t.Error()
+	}
+	if user.repr() != "Tom from Paris, France" {
 		t.Error()
 	}
 }

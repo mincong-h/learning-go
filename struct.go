@@ -15,14 +15,29 @@ func (p *Point) distanceTo(q *Point) float64 {
 	return math.Sqrt(x2 + y2)
 }
 
-// -- User and Location (embeded types)
+// -- Embedded Types: User and City
 
 type User struct {
-	Name     string
-	Location Location
+	Name string
+	City City
 }
 
-type Location struct {
+type City struct {
 	Country string
-	City    string
+	Name    string
+}
+
+// -- Interface: Callable
+// To implement an interface in Go, we just need
+// implement all the methods in the interface.
+type Representable interface {
+	repr() string
+}
+
+func (u *User) repr() string {
+	return u.Name + " from " + u.City.repr()
+}
+
+func (c *City) repr() string {
+	return c.Name + ", " + c.Country
 }
