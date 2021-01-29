@@ -19,6 +19,15 @@ Check Go version:
 
     $ go version
 
+## Run
+
+Run the main program:
+
+```
+$ go run main.go
+Hello, world!
+```
+
 ## Testing
 
 Run test:
