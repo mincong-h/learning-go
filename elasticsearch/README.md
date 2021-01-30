@@ -20,9 +20,10 @@ curl -X POST http://localhost:9200/my_index/_doc/?pretty \
 
 ## Run
 
+From project root, you can run the following samples:
+
 ```sh
-# From project root
-> go run elasticsearch/main.go
+> go run elasticsearch/*.go info
 2021/01/29 21:54:17 7.10.0
 2021/01/29 21:54:17 [200 OK] {
   "name" : "7550ef2d3518",
@@ -42,4 +43,9 @@ curl -X POST http://localhost:9200/my_index/_doc/?pretty \
   "tagline" : "You Know, for Search"
 }
  <nil>
+```
+
+```sh
+> go run elasticsearch/*.go get_indices
+2021/01/30 18:54:54 Found 1 indices: [my_index]
 ```

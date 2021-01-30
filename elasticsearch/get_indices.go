@@ -17,9 +17,9 @@ import (
 
 	Execution:
 
-		go run elasticsearch/get_indices.go
+		go run elasticsearch/*.go get_indices
 */
-func main() {
+func GetIndices() {
 	es, _ := elasticsearch.NewDefaultClient()
 	response, err := es.Indices.Get([]string{"_all"})
 	if err != nil {
