@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"github.com/elastic/go-elasticsearch/v7"
 	"log"
+	"os"
 )
 
 /*
@@ -18,13 +19,29 @@ import (
 	Execution:
 
 		go run elasticsearch/*.go get_indices
+		go run elasticsearch/*.go get_indices http://localhost:9200
 */
 func GetIndices() {
-	es, _ := elasticsearch.NewDefaultClient()
-	response, err := es.Indices.Get([]string{"_all"})
-	if err != nil {
-		panic(err)
+	var es *elasticsearch.Client
+	var cfgErr error
+
+	url := GetUrl()
+	if url == "" {
+		es, cfgErr = elasticsearch.NewDefaultClient()
+	} else {
+		es, cfgErr = elasticsearch.NewClient(elasticsearch.Config{
+			Addresses: []string{url},
+		})
 	}
+	if cfgErr != nil {
+		panic(cfgErr)
+	}
+
+	response, httpErr := es.Indices.Get([]string{"_all"})
+	if httpErr != nil {
+		panic(httpErr)
+	}
+
 	indices := make(map[string]json.RawMessage)
 	decoder := json.NewDecoder(response.Body)
 
@@ -39,4 +56,12 @@ func GetIndices() {
 		i++
 	}
 	log.Printf("Found %d indices: %s", len(indexNames), indexNames)
+}
+
+func GetUrl() string {
+	var lastArg = os.Args[len(os.Args)-1]
+	if lastArg != "get_indices" {
+		return lastArg
+	}
+	return ""
 }

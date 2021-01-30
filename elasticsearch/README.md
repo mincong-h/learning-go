@@ -49,3 +49,18 @@ From project root, you can run the following samples:
 > go run elasticsearch/*.go get_indices
 2021/01/30 18:54:54 Found 1 indices: [my_index]
 ```
+
+## Configuration
+
+Configure a new Elasticsearch client with custom addresses:
+
+```go
+es, err = elasticsearch.NewClient(elasticsearch.Config{
+    Addresses: []string{
+        "http://localhost:9200",
+        "http://localhost:9201",
+    },
+})
+```
+
+See https://github.com/elastic/go-elasticsearch#usage for more usage.
