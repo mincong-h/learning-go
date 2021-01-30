@@ -2,6 +2,7 @@ package json
 
 import (
 	"encoding/json"
+	"strings"
 	"testing"
 )
 
@@ -12,6 +13,11 @@ import (
 // Convert a JSON to map in Go (Golang)
 // https://golangbyexample.com/json-to-map-golang/
 //
+// How to use JSON with Go [best practices]
+// https://yourbasic.org/golang/json-example/
+//
+
+/* ----- json.Unmarshal ----- */
 
 func TestDeserializeAsMap(t *testing.T) {
 	// language=JSON
@@ -82,6 +88,28 @@ func TestDeserializeAsRawMessage(t *testing.T) {
 
 	mappings := indexMappingsMap["my_index"]
 	if mappings == nil {
+		t.Error()
+	}
+}
+
+/* ----- json.Decoder ----- */
+
+func TestDecodeAsMap(t *testing.T) {
+	// Given
+	// language=JSON
+	content := `{"apple": 1, "banana": 2}`
+	reader := strings.NewReader(content)
+	decoder := json.NewDecoder(reader)
+
+	// When
+	var fruits map[string]int
+	err := decoder.Decode(&fruits)
+
+	// Then
+	if err != nil {
+		t.Error(err)
+	}
+	if fruits["apple"] != 1 || fruits["banana"] != 2 {
 		t.Error()
 	}
 }
