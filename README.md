@@ -30,13 +30,23 @@ Hello, world!
 
 ## Testing
 
-Run test:
+Run tests for current directory:
 
-    $ go test
+```sh
+> go test
+```
 
-Run test with verbose mode:
+Run tests for all directories (current one and the sub-directories):
 
-    $ go test -v
+```sh
+> go test ./...
+```
+
+Run test with verbose mode (`-v`):
+
+```sh
+> go test -v ./...
+```
 
 ## Code Style
 
