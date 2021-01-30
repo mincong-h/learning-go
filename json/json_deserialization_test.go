@@ -62,7 +62,8 @@ func TestUnmarshalAsStruct(t *testing.T) {
 	}
 }
 
-func TestDeserializeAsRawMessage(t *testing.T) {
+func TestUnmarshalAsRawMessage(t *testing.T) {
+	// Given
 	// language=JSON
 	content := `{
   "my_index": {
@@ -82,8 +83,12 @@ func TestDeserializeAsRawMessage(t *testing.T) {
   }
 }
 `
+
+	// When
 	var indexMappingsMap map[string]json.RawMessage
 	err := json.Unmarshal([]byte(content), &indexMappingsMap)
+
+	// Then
 	if err != nil {
 		t.Error()
 	}
@@ -140,6 +145,48 @@ func TestDecodeAsStruct(t *testing.T) {
 	apple := Stock{Name: "apple", Count: 1}
 	banana := Stock{Name: "banana", Count: 2}
 	if fruits[0] != apple || fruits[1] != banana {
+		t.Error()
+	}
+}
+
+func TestDecodeAsRawMessage(t *testing.T) {
+	// Given
+	// language=JSON
+	content := `{
+  "my_index": {
+    "mappings": {
+      "properties": {
+        "msg": {
+          "type": "text",
+          "fields": {
+            "keyword": {
+              "type": "keyword",
+              "ignore_above": 256
+            }
+          }
+        }
+      }
+    }
+  }
+}
+`
+	reader := strings.NewReader(content)
+	decoder := json.NewDecoder(reader)
+
+	// When
+	var indexMappingsMap map[string]json.RawMessage
+	err := decoder.Decode(&indexMappingsMap)
+
+	// Then
+	if err != nil {
+		t.Error()
+	}
+	if len(indexMappingsMap) != 1 {
+		t.Error()
+	}
+
+	mappings := indexMappingsMap["my_index"]
+	if mappings == nil {
 		t.Error()
 	}
 }
