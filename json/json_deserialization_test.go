@@ -5,6 +5,14 @@ import (
 	"testing"
 )
 
+//
+// How to get the key value from a json string in Go
+// https://stackoverflow.com/a/17453121/4381330
+//
+// Convert a JSON to map in Go (Golang)
+// https://golangbyexample.com/json-to-map-golang/
+//
+
 func TestDeserializeAsMap(t *testing.T) {
 	// language=JSON
 	content := `{"apple": 1, "banana": 2}`
@@ -23,7 +31,7 @@ type Stock struct {
 	count int
 }
 
-func TestDeserializeAsStruct(t *testing.T)  {
+func TestDeserializeAsStruct(t *testing.T) {
 	// language=JSON
 	content := `[
 	{"name": "apple", "count": 1},
@@ -37,6 +45,41 @@ func TestDeserializeAsStruct(t *testing.T)  {
 	apple := Stock{name: "apple", count: 1}
 	banana := Stock{name: "banana", count: 2}
 	if fruits[0] != apple || fruits[1] != banana {
+		t.Error()
+	}
+}
+
+func TestDeserializeAsRawMessage(t *testing.T) {
+	// language=JSON
+	content := `{
+  "my_index": {
+    "mappings": {
+      "properties": {
+        "msg": {
+          "type": "text",
+          "fields": {
+            "keyword": {
+              "type": "keyword",
+              "ignore_above": 256
+            }
+          }
+        }
+      }
+    }
+  }
+}
+`
+	var indexMappingsMap map[string]json.RawMessage
+	err := json.Unmarshal([]byte(content), &indexMappingsMap)
+	if err != nil {
+		t.Error()
+	}
+	if len(indexMappingsMap) != 1 {
+		t.Error()
+	}
+
+	mappings := indexMappingsMap["my_index"]
+	if mappings == nil {
 		t.Error()
 	}
 }
