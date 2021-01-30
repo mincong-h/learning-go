@@ -12,6 +12,12 @@ docker run \
   docker.elastic.co/elasticsearch/elasticsearch:7.8.0
 ```
 
+```
+curl -X POST http://localhost:9200/my_index/_doc/?pretty \
+  -H 'Content-Type: application/json' \
+  -d '{"msg": "hello world!"}'
+```
+
 ## Run
 
 ```sh
