@@ -27,8 +27,10 @@ func TestDeserializeAsMap(t *testing.T) {
 }
 
 type Stock struct {
-	name  string
-	count int
+	// You have to use PascalCase to unmarshall the JSON, using camelCase to
+	// unmarshall it won't work, e.g. a string value will be filled as "".
+	Name  string
+	Count int
 }
 
 func TestDeserializeAsStruct(t *testing.T) {
@@ -42,8 +44,8 @@ func TestDeserializeAsStruct(t *testing.T) {
 	if err != nil {
 		t.Error()
 	}
-	apple := Stock{name: "apple", count: 1}
-	banana := Stock{name: "banana", count: 2}
+	apple := Stock{Name: "apple", Count: 1}
+	banana := Stock{Name: "banana", Count: 2}
 	if fruits[0] != apple || fruits[1] != banana {
 		t.Error()
 	}
