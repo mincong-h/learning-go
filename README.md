@@ -1,4 +1,4 @@
-# Learning Go [![Build Status][travis-img]][travis]
+# Learning Go [![Build Status][actions-img]][actions]
 
 Learning Go using book **"Introducing Go"**, written by Caleb Doxsey, and other
 online materials.
@@ -56,5 +56,5 @@ The source code is formatted automatically using
 - Mark McGranaghan, "Go by Example", _gobyexample_, 2019.
   <https://gobyexample.com/>
 
-[travis]: https://travis-ci.org/mincong-h/learning-go
-[travis-img]: https://travis-ci.org/mincong-h/learning-go.svg?branch=master
+[actions]: https://github.com/mincong-h/learning-go/actions
+[actions-img]: https://github.com/mincong-h/learning-go/workflows/Actions/badge.svg
