@@ -2,6 +2,7 @@ package json
 
 import (
 	"encoding/json"
+	"reflect"
 	"strings"
 	"testing"
 )
@@ -17,26 +18,35 @@ import (
 // https://yourbasic.org/golang/json-example/
 //
 
-/* ----- json.Unmarshal ----- */
-
-func TestDeserializeAsMap(t *testing.T) {
-	// language=JSON
-	content := `{"apple": 1, "banana": 2}`
-	var fruits map[string]int
-	err := json.Unmarshal([]byte(content), &fruits)
-	if err != nil {
-		t.Error()
-	}
-	if fruits["apple"] != 1 || fruits["banana"] != 2 {
-		t.Error()
-	}
-}
-
 type Stock struct {
 	// You have to use PascalCase to unmarshall the JSON, using camelCase to
 	// unmarshall it won't work, e.g. a string value will be filled as "".
 	Name  string
 	Count int
+}
+
+/* ----- json.Unmarshal ----- */
+
+func TestUnmarshalAsMap(t *testing.T) {
+	// Given
+	// language=JSON
+	content := `{"apple": 1, "banana": 2}`
+
+	// When
+	var fruits map[string]int
+	err := json.Unmarshal([]byte(content), &fruits)
+
+	// Then
+	if err != nil {
+		t.Error(err)
+	}
+	eq := reflect.DeepEqual(fruits, map[string]int{
+		"apple":  1,
+		"banana": 2,
+	})
+	if !eq {
+		t.Error()
+	}
 }
 
 func TestUnmarshalAsStruct(t *testing.T) {
@@ -53,7 +63,7 @@ func TestUnmarshalAsStruct(t *testing.T) {
 
 	// Then
 	if err != nil {
-		t.Error()
+		t.Error(err)
 	}
 	apple := Stock{Name: "apple", Count: 1}
 	banana := Stock{Name: "banana", Count: 2}
@@ -119,7 +129,11 @@ func TestDecodeAsMap(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
-	if fruits["apple"] != 1 || fruits["banana"] != 2 {
+	eq := reflect.DeepEqual(fruits, map[string]int{
+		"apple":  1,
+		"banana": 2,
+	})
+	if !eq {
 		t.Error()
 	}
 }
@@ -140,7 +154,7 @@ func TestDecodeAsStruct(t *testing.T) {
 
 	// Then
 	if err != nil {
-		t.Error()
+		t.Error(err)
 	}
 	apple := Stock{Name: "apple", Count: 1}
 	banana := Stock{Name: "banana", Count: 2}
@@ -179,7 +193,7 @@ func TestDecodeAsRawMessage(t *testing.T) {
 
 	// Then
 	if err != nil {
-		t.Error()
+		t.Error(err)
 	}
 	if len(indexMappingsMap) != 1 {
 		t.Error()
