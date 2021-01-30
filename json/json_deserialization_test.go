@@ -39,14 +39,19 @@ type Stock struct {
 	Count int
 }
 
-func TestDeserializeAsStruct(t *testing.T) {
+func TestUnmarshalAsStruct(t *testing.T) {
+	// Given
 	// language=JSON
 	content := `[
 	{"name": "apple", "count": 1},
 	{"name": "banana", "count": 2}
 ]`
+
+	// When
 	var fruits []Stock
 	err := json.Unmarshal([]byte(content), &fruits)
+
+	// Then
 	if err != nil {
 		t.Error()
 	}
@@ -110,6 +115,31 @@ func TestDecodeAsMap(t *testing.T) {
 		t.Error(err)
 	}
 	if fruits["apple"] != 1 || fruits["banana"] != 2 {
+		t.Error()
+	}
+}
+
+func TestDecodeAsStruct(t *testing.T) {
+	// Given
+	// language=JSON
+	content := `[
+	{"name": "apple", "count": 1},
+	{"name": "banana", "count": 2}
+]`
+	reader := strings.NewReader(content)
+	decoder := json.NewDecoder(reader)
+
+	// When
+	var fruits []Stock
+	err := decoder.Decode(&fruits)
+
+	// Then
+	if err != nil {
+		t.Error()
+	}
+	apple := Stock{Name: "apple", Count: 1}
+	banana := Stock{Name: "banana", Count: 2}
+	if fruits[0] != apple || fruits[1] != banana {
 		t.Error()
 	}
 }
