@@ -163,6 +163,31 @@ func TestDecodeAsStruct(t *testing.T) {
 	}
 }
 
+func TestDecodeAsStructWithUnknownField(t *testing.T) {
+	// Given
+	// language=JSON
+	content := `[
+	{"name": "apple", "count": 1, "date":  "2021-02-24"},
+	{"name": "banana", "count": 2, "date":  "2021-02-24"}
+]`
+	reader := strings.NewReader(content)
+	decoder := json.NewDecoder(reader)
+
+	// When
+	var fruits []Stock
+	err := decoder.Decode(&fruits)
+
+	// Then
+	if err != nil {
+		t.Error(err)
+	}
+	apple := Stock{Name: "apple", Count: 1}
+	banana := Stock{Name: "banana", Count: 2}
+	if fruits[0] != apple || fruits[1] != banana {
+		t.Error()
+	}
+}
+
 func TestDecodeAsRawMessage(t *testing.T) {
 	// Given
 	// language=JSON
