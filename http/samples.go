@@ -1,6 +1,7 @@
 package http
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -36,6 +37,35 @@ func getClusterSummarySync(httpClient *http.Client, url string) (ClusterSummary,
 	if err != nil {
 		return ClusterSummary{}, err
 	}
+	defer resp.Body.Close()
+	if resp.StatusCode != http.StatusOK {
+		return ClusterSummary{}, fmt.Errorf("unexpected status code: %d", resp.StatusCode)
+	}
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return ClusterSummary{}, fmt.Errorf("failed to read response: %v", err)
+	}
+
+	var summary ClusterSummary
+	err = json.Unmarshal(body, &summary)
+	if err != nil {
+		return ClusterSummary{}, fmt.Errorf("failed to unmarshal cluster summary: %s", body)
+	}
+
+	return summary, nil
+}
+
+func getClusterSummaryAsync(ctx context.Context, httpClient *http.Client, url string) (ClusterSummary, error) {
+	req, err := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
+	if err != nil {
+		return ClusterSummary{}, fmt.Errorf("failed to create request: %v", err)
+	}
+
+	resp, err := httpClient.Do(req)
+	if err != nil {
+		return ClusterSummary{}, fmt.Errorf("failed to perform request: %v", err)
+	}
+
 	defer resp.Body.Close()
 	if resp.StatusCode != http.StatusOK {
 		return ClusterSummary{}, fmt.Errorf("unexpected status code: %d", resp.StatusCode)
