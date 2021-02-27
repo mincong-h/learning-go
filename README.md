@@ -13,18 +13,22 @@ online materials.
 
 Install Go on macOS:
 
-    $ brew install go
+```sh
+> brew install go
+```
 
 Check Go version:
 
-    $ go version
+```sh
+> go version
+```
 
 ## Run
 
 Run the main program:
 
-```
-$ go run main.go
+```sh
+> go run main.go
 Hello, world!
 ```
 
@@ -53,7 +57,9 @@ Run test with verbose mode (`-v`):
 The source code is formatted automatically using
 [gofmt](https://golang.org/cmd/gofmt/) tool:
 
-    $ go fmt
+```sh
+> go fmt
+```
 
 ## References
 
