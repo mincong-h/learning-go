@@ -7,25 +7,24 @@ import (
 	"net/http"
 )
 
-// TODO: how to handle custom JSON property mapping, e.g. cluster_name => ClusterName?
 type ClusterSummary struct {
-	Name         string
-	Cluster_Name string
-	Cluster_Uuid string
-	Version      ClusterVersion
-	Tagline      string
+	Name        string         `json:"name"`
+	ClusterName string         `json:"cluster_name"`
+	ClusterUuid string         `json:"cluster_uuid"`
+	Version     ClusterVersion `json:"version"`
+	Tagline     string         `json:"tagline"`
 }
 
 type ClusterVersion struct {
-	Number                              string
-	Build_Flavor                        string
-	Build_Type                          string
-	Build_Hash                          string
-	Build_Date                          string
-	Build_Snapshot                      bool
-	Lucene_Version                      string
-	Minimum_Wire_Compatibility_Version  string
-	Minimum_Index_Compatibility_Version string
+	Number                           string `json:"number"`
+	BuildFlavor                      string `json:"build_flavor"`
+	BuildType                        string `json:"build_type"`
+	BuildHash                        string `json:"build_hash"`
+	BuildDate                        string `json:"build_date"`
+	BuildSnapshot                    bool   `json:"build_snapshot"`
+	LuceneVersion                    string `json:"lucene_version"`
+	MinimumWireCompatibilityVersion  string `json:"minimum_wire_compatibility_version"`
+	MinimumIndexCompatibilityVersion string `json:"minimum_index_compatibility_version"`
 }
 
 func GetClusterSummarySync() (ClusterSummary, error) {
