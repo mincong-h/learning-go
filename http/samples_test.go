@@ -37,19 +37,19 @@ func TestGetClusterSummarySync(t *testing.T) {
 
 	// Then
 	expectedSummary := ClusterSummary{
-		Name:         "4455175953c5",
-		Cluster_Name: "docker-cluster",
-		Cluster_Uuid: "yFfZWsvCT6ODAosBBMB8AA",
+		Name:        "4455175953c5",
+		ClusterName: "docker-cluster",
+		ClusterUuid: "yFfZWsvCT6ODAosBBMB8AA",
 		Version: ClusterVersion{
-			Number:                              "7.8.0",
-			Build_Flavor:                        "default",
-			Build_Type:                          "docker",
-			Build_Hash:                          "757314695644ea9a1dc2fecd26d1a43856725e65",
-			Build_Date:                          "2020-06-14T19:35:50.234439Z",
-			Build_Snapshot:                      false,
-			Lucene_Version:                      "8.5.1",
-			Minimum_Wire_Compatibility_Version:  "6.8.0",
-			Minimum_Index_Compatibility_Version: "6.0.0-beta1",
+			Number:                           "7.8.0",
+			BuildFlavor:                      "default",
+			BuildType:                        "docker",
+			BuildHash:                        "757314695644ea9a1dc2fecd26d1a43856725e65",
+			BuildDate:                        "2020-06-14T19:35:50.234439Z",
+			BuildSnapshot:                    false,
+			LuceneVersion:                    "8.5.1",
+			MinimumWireCompatibilityVersion:  "6.8.0",
+			MinimumIndexCompatibilityVersion: "6.0.0-beta1",
 		},
 		Tagline: "You Know, for Search",
 	}
