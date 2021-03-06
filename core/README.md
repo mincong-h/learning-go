@@ -1,0 +1,3 @@
+# core
+
+Basics about Go.
