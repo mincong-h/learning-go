@@ -3,11 +3,13 @@
 Learning Go using book **"Introducing Go"**, written by Caleb Doxsey, and other
 online materials.
 
-<p align="center">
-  <a href="https://amzn.to/31Mz7E1">
-    <img src="img/introducing-go.jpg" width="200" alt="Caleb Doxsey, Introducing Go" />
-  </a>
-</p>
+Module | Description
+:--- | :---
+`core` | The core features from the Go SDK.
+`elasticsearch` | Elasticsearch Go client.
+`http` | Using HTTP client in Go.
+`json` | JSON marshalling and unmarshalling.
+`temporal` | Writing invincible workflows with <https://temporal.io/>.
 
 ## Installation
 
