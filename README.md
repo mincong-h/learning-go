@@ -34,7 +34,7 @@ Hello, world!
 
 ## Testing
 
-Run tests for current directory:
+Run tests for the current directory:
 
 ```sh
 > go test
@@ -46,7 +46,7 @@ Run tests for all directories (current one and the sub-directories):
 > go test ./...
 ```
 
-Run test with verbose mode (`-v`):
+Run test with the verbose mode (`-v`):
 
 ```sh
 > go test -v ./...
