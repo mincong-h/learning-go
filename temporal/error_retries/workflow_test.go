@@ -1,10 +1,15 @@
 package error_retries
 
 import (
+	"context"
+	"errors"
+	"fmt"
+	"strings"
 	"testing"
 
 	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/suite"
+	"go.temporal.io/sdk/temporal"
 	"go.temporal.io/sdk/testsuite"
 )
 
@@ -42,4 +47,81 @@ func (ts *WorkflowTestSuite) TestWorkflow_CompletedSuccessfully() {
 	var result string
 	ts.NoError(ts.env.GetWorkflowResult(&result))
 	ts.Equal("Hello, UnitTest!", result)
+}
+
+func (ts *WorkflowTestSuite) TestWorkflow_ExplicitRetryableError() {
+	// Given
+	executionCount := 0
+	ts.env.OnActivity(MyActivity, mock.Anything, mock.Anything).Return(func(ctx context.Context, msg string) (string, error) {
+		executionCount++
+		if executionCount == 1 {
+			return "", temporal.NewApplicationError("Something goes wrong", "test")
+		} else {
+			return "Hello, UnitTest!", nil
+		}
+	})
+
+	// When
+	ts.env.ExecuteWorkflow(MyWorkflow, "UnitTest")
+
+	// Then
+	ts.True(ts.env.IsWorkflowCompleted())
+	ts.NoError(ts.env.GetWorkflowError())
+
+	var result string
+	ts.NoError(ts.env.GetWorkflowResult(&result))
+	ts.Equal("Hello, UnitTest!", result)
+	ts.Equal(executionCount, 2, "1st execution failed and 2nd execution succeed")
+}
+
+func (ts *WorkflowTestSuite) TestWorkflow_ImplicitRetryableError() {
+	// Given
+	executionCount := 0
+	ts.env.OnActivity(MyActivity, mock.Anything, mock.Anything).Return(func(ctx context.Context, msg string) (string, error) {
+		executionCount++
+		if executionCount == 1 {
+			// Temporal transforms this error into temporal.NewApplicationError
+			// which is retryable
+			return "", fmt.Errorf("something goes wrong")
+		} else {
+			return "Hello, UnitTest!", nil
+		}
+	})
+
+	// When
+	ts.env.ExecuteWorkflow(MyWorkflow, "UnitTest")
+
+	// Then
+	ts.True(ts.env.IsWorkflowCompleted())
+	ts.NoError(ts.env.GetWorkflowError())
+
+	var result string
+	ts.NoError(ts.env.GetWorkflowResult(&result))
+	ts.Equal("Hello, UnitTest!", result)
+	ts.Equal(executionCount, 2, "1st execution failed and 2nd execution succeed")
+}
+
+func (ts *WorkflowTestSuite) TestWorkflow_NonRetryableError() {
+	// Given
+	executionCount := 0
+	ts.env.OnActivity(MyActivity, mock.Anything, mock.Anything).Return(func(ctx context.Context, msg string) (string, error) {
+		executionCount++
+		if executionCount == 1 {
+			return "", temporal.NewNonRetryableApplicationError("Something goes wrong", "test", nil)
+		} else {
+			return "Hello, UnitTest!", nil
+		}
+	})
+
+	// When
+	ts.env.ExecuteWorkflow(MyWorkflow, "UnitTest")
+
+	// Then
+	ts.True(ts.env.IsWorkflowCompleted())
+
+	var err *temporal.ApplicationError
+	ts.True(errors.As(ts.env.GetWorkflowError(), &err))
+	ts.True(err.NonRetryable())
+	ts.True(strings.Contains(err.Error(), "Something goes wrong"))
+	ts.Equal(executionCount, 1, "1st execution failed but not retried")
 }
