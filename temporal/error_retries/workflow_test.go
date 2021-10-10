@@ -55,7 +55,7 @@ func (ts *WorkflowTestSuite) TestWorkflow_ExplicitRetryableError() {
 	ts.env.OnActivity(MyActivity, mock.Anything, mock.Anything).Return(func(ctx context.Context, msg string) (string, error) {
 		executionCount++
 		if executionCount == 1 {
-			return "", temporal.NewApplicationError("Something goes wrong", "test")
+			return "", temporal.NewApplicationError("oops", "test")
 		} else {
 			return "Hello, UnitTest!", nil
 		}
@@ -82,7 +82,7 @@ func (ts *WorkflowTestSuite) TestWorkflow_ImplicitRetryableError() {
 		if executionCount == 1 {
 			// Temporal transforms this error into temporal.NewApplicationError
 			// which is retryable
-			return "", fmt.Errorf("something goes wrong")
+			return "", fmt.Errorf("oops")
 		} else {
 			return "Hello, UnitTest!", nil
 		}
@@ -107,7 +107,7 @@ func (ts *WorkflowTestSuite) TestWorkflow_NonRetryableError() {
 	ts.env.OnActivity(MyActivity, mock.Anything, mock.Anything).Return(func(ctx context.Context, msg string) (string, error) {
 		executionCount++
 		if executionCount == 1 {
-			return "", temporal.NewNonRetryableApplicationError("Something goes wrong", "test", nil)
+			return "", temporal.NewNonRetryableApplicationError("oops", "test", nil)
 		} else {
 			return "Hello, UnitTest!", nil
 		}
@@ -122,6 +122,6 @@ func (ts *WorkflowTestSuite) TestWorkflow_NonRetryableError() {
 	var err *temporal.ApplicationError
 	ts.True(errors.As(ts.env.GetWorkflowError(), &err))
 	ts.True(err.NonRetryable())
-	ts.True(strings.Contains(err.Error(), "Something goes wrong"))
+	ts.True(strings.Contains(err.Error(), "oops"))
 	ts.Equal(executionCount, 1, "1st execution failed but not retried")
 }
