@@ -28,14 +28,18 @@ func (ts *WorkflowTestSuite) AfterTest() {
 	ts.env.AssertExpectations(ts.T())
 }
 
-func (ts *WorkflowTestSuite) TestWorkflow() {
+func (ts *WorkflowTestSuite) TestWorkflow_CompletedSuccessfully() {
 	// Given
 	ts.env.OnActivity(MyActivity, mock.Anything, mock.Anything).Return("Hello, UnitTest!", nil)
 
 	// When
 	ts.env.ExecuteWorkflow(MyWorkflow, "UnitTest")
 
-	// When
+	// Then
 	ts.True(ts.env.IsWorkflowCompleted())
 	ts.NoError(ts.env.GetWorkflowError())
+
+	var result string
+	ts.NoError(ts.env.GetWorkflowResult(&result))
+	ts.Equal("Hello, UnitTest!", result)
 }
