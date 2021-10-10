@@ -71,7 +71,7 @@ func (ts *WorkflowTestSuite) TestWorkflow_ExplicitRetryableError() {
 	var result string
 	ts.NoError(ts.env.GetWorkflowResult(&result))
 	ts.Equal("Hello, UnitTest!", result)
-	ts.Equal(executionCount, 2, "1st execution failed and 2nd execution succeed")
+	ts.Equal(2, executionCount, "1st execution failed and 2nd execution succeed")
 }
 
 func (ts *WorkflowTestSuite) TestWorkflow_ImplicitRetryableError() {
@@ -98,7 +98,7 @@ func (ts *WorkflowTestSuite) TestWorkflow_ImplicitRetryableError() {
 	var result string
 	ts.NoError(ts.env.GetWorkflowResult(&result))
 	ts.Equal("Hello, UnitTest!", result)
-	ts.Equal(executionCount, 2, "1st execution failed and 2nd execution succeed")
+	ts.Equal(2, executionCount, "1st execution failed and 2nd execution succeed")
 }
 
 func (ts *WorkflowTestSuite) TestWorkflow_NonRetryableError() {
@@ -123,5 +123,48 @@ func (ts *WorkflowTestSuite) TestWorkflow_NonRetryableError() {
 	ts.True(errors.As(ts.env.GetWorkflowError(), &err))
 	ts.True(err.NonRetryable())
 	ts.True(strings.Contains(err.Error(), "oops"))
-	ts.Equal(executionCount, 1, "1st execution failed but not retried")
+	ts.Equal(1, executionCount, "1st execution failed but not retried")
+}
+
+func (ts *WorkflowTestSuite) TestWorkflow2_NonRetry() {
+	// Given
+
+	// When
+	ts.env.ExecuteWorkflow(MyWorkflow2, "UnitTest")
+
+	// Then
+	ts.True(ts.env.IsWorkflowCompleted())
+
+	var err *temporal.WorkflowExecutionError
+	ts.True(errors.As(ts.env.GetWorkflowError(), &err))
+	print(err.Error())
+}
+
+func (ts *WorkflowTestSuite) TestWorkflow3_NonRetry() {
+	// Given
+	executionCount := 0
+	ts.env.OnActivity(MyActivity, mock.Anything, mock.Anything).Return(func(ctx context.Context, msg string) (string, error) {
+		executionCount++
+		if executionCount == 1 {
+			return "", &MyError{
+				Message: "oops",
+			}
+		} else {
+			return "Hello, UnitTest!", nil
+		}
+	})
+
+	// When
+	ts.env.ExecuteWorkflow(MyWorkflow3, "UnitTest")
+
+	// Then
+	ts.True(ts.env.IsWorkflowCompleted())
+
+	var err *temporal.ApplicationError
+	ts.True(errors.As(ts.env.GetWorkflowError(), &err))
+	// NOTE: this error is marked as retryable but it was not retried
+	ts.False(err.NonRetryable())
+
+	ts.True(strings.Contains(err.Error(), "oops"))
+	ts.Equal(1, executionCount, "1st execution failed but not retried")
 }
