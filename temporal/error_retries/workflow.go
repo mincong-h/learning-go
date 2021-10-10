@@ -33,7 +33,7 @@ func MyWorkflow(ctx workflow.Context, name string) (string, error) {
 	return result, nil
 }
 
-func MyWorkflow2(ctx workflow.Context, name string) (string, error) {
+func MyWorkflowWithRetryPolicy(ctx workflow.Context, name string) (string, error) {
 	ctx = workflow.WithActivityOptions(ctx, workflow.ActivityOptions{
 		StartToCloseTimeout: 10 * time.Second,
 		RetryPolicy: &temporal.RetryPolicy{
@@ -58,7 +58,7 @@ func MyWorkflow2(ctx workflow.Context, name string) (string, error) {
 	return result, nil
 }
 
-func MyWorkflow3(ctx workflow.Context, name string) (string, error) {
+func MyFailingWorkflow(ctx workflow.Context, name string) (string, error) {
 	ctx = workflow.WithActivityOptions(ctx, workflow.ActivityOptions{
 		StartToCloseTimeout: 10 * time.Second,
 	})

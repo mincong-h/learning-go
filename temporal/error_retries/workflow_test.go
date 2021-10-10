@@ -6,9 +6,11 @@ import (
 	"fmt"
 	"strings"
 	"testing"
+	"time"
 
 	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/suite"
+	"go.temporal.io/sdk/client"
 	"go.temporal.io/sdk/temporal"
 	"go.temporal.io/sdk/testsuite"
 )
@@ -141,7 +143,7 @@ func (ts *WorkflowTestSuite) TestActivityError_NonRetryForErrorsInRetryPolicy() 
 	})
 
 	// When
-	ts.env.ExecuteWorkflow(MyWorkflow2, "UnitTest")
+	ts.env.ExecuteWorkflow(MyWorkflowWithRetryPolicy, "UnitTest")
 
 	// Then
 	ts.True(ts.env.IsWorkflowCompleted())
@@ -155,15 +157,61 @@ func (ts *WorkflowTestSuite) TestActivityError_NonRetryForErrorsInRetryPolicy() 
 	ts.Equal(1, executionCount, "1st execution failed but not retried")
 }
 
+func (ts *WorkflowTestSuite) TestActivityError_KeepFailingUntilMaximumAttempts() {
+	// Given
+	executionCount := 0
+	ts.env.OnActivity(MyActivity, mock.Anything, mock.Anything).Return(func(ctx context.Context, msg string) (string, error) {
+		executionCount++
+		return "", fmt.Errorf("oops (%d)", executionCount)
+	})
+
+	// When
+	ts.env.ExecuteWorkflow(MyWorkflowWithRetryPolicy, "UnitTest")
+
+	// Then
+	ts.True(ts.env.IsWorkflowCompleted())
+
+	var err *temporal.ApplicationError
+	ts.True(errors.As(ts.env.GetWorkflowError(), &err))
+	ts.False(err.NonRetryable())
+
+	ts.True(strings.Contains(err.Error(), "oops"))
+	ts.Equal(5, executionCount, "maximum attempts reached")
+}
+
 func (ts *WorkflowTestSuite) TestWorkflowError_NonRetry() {
 	// Given
 
 	// When
-	ts.env.ExecuteWorkflow(MyWorkflow3, "UnitTest")
+	ts.env.ExecuteWorkflow(MyFailingWorkflow, "UnitTest")
 
 	// Then
 	ts.True(ts.env.IsWorkflowCompleted())
 
 	var err *temporal.WorkflowExecutionError
 	ts.True(errors.As(ts.env.GetWorkflowError(), &err))
+}
+
+func (ts *WorkflowTestSuite) TestWorkflowError_RetryWorkflow() {
+	// Given
+	ts.env.SetStartWorkflowOptions(client.StartWorkflowOptions{
+		// NOTE: compared to the default test environment, here we introduce a retry policy so that
+		// Temporal server will retry all the time when error occurred.
+		RetryPolicy: &temporal.RetryPolicy{
+			InitialInterval:    1 * time.Second,
+			BackoffCoefficient: 2,
+			MaximumInterval:    1 * time.Minute,
+			MaximumAttempts:    5,
+		},
+	})
+
+	// When
+	ts.env.ExecuteWorkflow(MyFailingWorkflow, "UnitTest")
+
+	// Then
+	ts.True(ts.env.IsWorkflowCompleted())
+
+	var err *temporal.WorkflowExecutionError
+	ts.True(errors.As(ts.env.GetWorkflowError(), &err))
+	// TODO: how to ensure that the workflow is retried??
 }
