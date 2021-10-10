@@ -179,6 +179,24 @@ func (ts *WorkflowTestSuite) TestActivityError_KeepFailingUntilMaximumAttempts()
 	ts.Equal(5, executionCount, "maximum attempts reached")
 }
 
+func (ts *WorkflowTestSuite) TestChildWorkflow_KeepRetryingUntilMaximumAttempts() {
+	// Given
+	ts.env.RegisterWorkflow(MyFailingWorkflow)
+
+	// When
+	ts.env.ExecuteWorkflow(MyWorkflowWithChildWorkflowRetryPolicy, "UnitTest")
+
+	// Then
+	ts.True(ts.env.IsWorkflowCompleted())
+
+	var err *temporal.ApplicationError
+	ts.True(errors.As(ts.env.GetWorkflowError(), &err))
+	ts.False(err.NonRetryable())
+
+	ts.True(strings.Contains(err.Error(), "oops"))
+	// NOTE: visit logs to observe that the child workflow had been retried 5 times
+}
+
 func (ts *WorkflowTestSuite) TestWorkflowError_NonRetry() {
 	// Given
 
