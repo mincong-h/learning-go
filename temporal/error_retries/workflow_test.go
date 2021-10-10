@@ -33,7 +33,7 @@ func (ts *WorkflowTestSuite) AfterTest() {
 	ts.env.AssertExpectations(ts.T())
 }
 
-func (ts *WorkflowTestSuite) TestWorkflow_CompletedSuccessfully() {
+func (ts *WorkflowTestSuite) TestActivityError_CompletedSuccessfullyWithoutError() {
 	// Given
 	ts.env.OnActivity(MyActivity, mock.Anything, mock.Anything).Return("Hello, UnitTest!", nil)
 
@@ -49,7 +49,7 @@ func (ts *WorkflowTestSuite) TestWorkflow_CompletedSuccessfully() {
 	ts.Equal("Hello, UnitTest!", result)
 }
 
-func (ts *WorkflowTestSuite) TestWorkflow_ExplicitRetryableError() {
+func (ts *WorkflowTestSuite) TestActivityError_ExplicitRetryableError() {
 	// Given
 	executionCount := 0
 	ts.env.OnActivity(MyActivity, mock.Anything, mock.Anything).Return(func(ctx context.Context, msg string) (string, error) {
@@ -74,7 +74,7 @@ func (ts *WorkflowTestSuite) TestWorkflow_ExplicitRetryableError() {
 	ts.Equal(2, executionCount, "1st execution failed and 2nd execution succeed")
 }
 
-func (ts *WorkflowTestSuite) TestWorkflow_ImplicitRetryableError() {
+func (ts *WorkflowTestSuite) TestActivityError_ImplicitRetryableError() {
 	// Given
 	executionCount := 0
 	ts.env.OnActivity(MyActivity, mock.Anything, mock.Anything).Return(func(ctx context.Context, msg string) (string, error) {
@@ -101,7 +101,7 @@ func (ts *WorkflowTestSuite) TestWorkflow_ImplicitRetryableError() {
 	ts.Equal(2, executionCount, "1st execution failed and 2nd execution succeed")
 }
 
-func (ts *WorkflowTestSuite) TestWorkflow_NonRetryableError() {
+func (ts *WorkflowTestSuite) TestActivityError_NonRetryableError() {
 	// Given
 	executionCount := 0
 	ts.env.OnActivity(MyActivity, mock.Anything, mock.Anything).Return(func(ctx context.Context, msg string) (string, error) {
@@ -126,21 +126,7 @@ func (ts *WorkflowTestSuite) TestWorkflow_NonRetryableError() {
 	ts.Equal(1, executionCount, "1st execution failed but not retried")
 }
 
-func (ts *WorkflowTestSuite) TestWorkflow2_NonRetry() {
-	// Given
-
-	// When
-	ts.env.ExecuteWorkflow(MyWorkflow3, "UnitTest")
-
-	// Then
-	ts.True(ts.env.IsWorkflowCompleted())
-
-	var err *temporal.WorkflowExecutionError
-	ts.True(errors.As(ts.env.GetWorkflowError(), &err))
-	print(err.Error())
-}
-
-func (ts *WorkflowTestSuite) TestWorkflow3_NonRetry() {
+func (ts *WorkflowTestSuite) TestActivityError_NonRetryForErrorsInRetryPolicy() {
 	// Given
 	executionCount := 0
 	ts.env.OnActivity(MyActivity, mock.Anything, mock.Anything).Return(func(ctx context.Context, msg string) (string, error) {
@@ -167,4 +153,17 @@ func (ts *WorkflowTestSuite) TestWorkflow3_NonRetry() {
 
 	ts.True(strings.Contains(err.Error(), "oops"))
 	ts.Equal(1, executionCount, "1st execution failed but not retried")
+}
+
+func (ts *WorkflowTestSuite) TestWorkflowError_NonRetry() {
+	// Given
+
+	// When
+	ts.env.ExecuteWorkflow(MyWorkflow3, "UnitTest")
+
+	// Then
+	ts.True(ts.env.IsWorkflowCompleted())
+
+	var err *temporal.WorkflowExecutionError
+	ts.True(errors.As(ts.env.GetWorkflowError(), &err))
 }
