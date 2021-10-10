@@ -36,21 +36,14 @@ func MyWorkflow(ctx workflow.Context, name string) (string, error) {
 func MyWorkflow2(ctx workflow.Context, name string) (string, error) {
 	ctx = workflow.WithActivityOptions(ctx, workflow.ActivityOptions{
 		StartToCloseTimeout: 10 * time.Second,
-	})
-	logger := workflow.GetLogger(ctx)
-	err := fmt.Errorf("oops")
-	logger.Error(fmt.Sprintf("Workflow failed: %v", err))
-	return "", err
-}
-
-func MyWorkflow3(ctx workflow.Context, name string) (string, error) {
-	ctx = workflow.WithActivityOptions(ctx, workflow.ActivityOptions{
-		StartToCloseTimeout: 10 * time.Second,
 		RetryPolicy: &temporal.RetryPolicy{
-			InitialInterval:        1 * time.Second,
-			BackoffCoefficient:     2,
-			MaximumInterval:        1 * time.Minute,
-			MaximumAttempts:        5,
+			InitialInterval:    1 * time.Second,
+			BackoffCoefficient: 2,
+			MaximumInterval:    1 * time.Minute,
+			MaximumAttempts:    5,
+			// NOTE: compared to MyWorkflow, MyWorkflow2 introduces a retry policy which includes
+			// non-retryable error types. Temporal server will stop retry if error type matches
+			// this list.
 			NonRetryableErrorTypes: []string{"MyError"},
 		},
 	})
@@ -63,6 +56,16 @@ func MyWorkflow3(ctx workflow.Context, name string) (string, error) {
 	}
 	logger.Info("Workflow completed.", "result", result)
 	return result, nil
+}
+
+func MyWorkflow3(ctx workflow.Context, name string) (string, error) {
+	ctx = workflow.WithActivityOptions(ctx, workflow.ActivityOptions{
+		StartToCloseTimeout: 10 * time.Second,
+	})
+	logger := workflow.GetLogger(ctx)
+	err := fmt.Errorf("oops")
+	logger.Error(fmt.Sprintf("Workflow failed: %v", err))
+	return "", err
 }
 
 func MyActivity(ctx context.Context, name string) (string, error) {

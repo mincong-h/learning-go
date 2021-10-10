@@ -130,7 +130,7 @@ func (ts *WorkflowTestSuite) TestWorkflow2_NonRetry() {
 	// Given
 
 	// When
-	ts.env.ExecuteWorkflow(MyWorkflow2, "UnitTest")
+	ts.env.ExecuteWorkflow(MyWorkflow3, "UnitTest")
 
 	// Then
 	ts.True(ts.env.IsWorkflowCompleted())
@@ -155,7 +155,7 @@ func (ts *WorkflowTestSuite) TestWorkflow3_NonRetry() {
 	})
 
 	// When
-	ts.env.ExecuteWorkflow(MyWorkflow3, "UnitTest")
+	ts.env.ExecuteWorkflow(MyWorkflow2, "UnitTest")
 
 	// Then
 	ts.True(ts.env.IsWorkflowCompleted())
