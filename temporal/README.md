@@ -15,4 +15,4 @@ Temporal (<https://temporal.io/>) is the open source microservices orchestration
 Frequently used links:
 
 - https://docs.temporal.io/docs/go-workflow-testing Testing
-- https://docs.temporal.io/docs/go-error-handling/ Error handling
+- https://docs.temporal.io/docs/go-error-handling Error handling
