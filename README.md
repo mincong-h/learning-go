@@ -60,7 +60,7 @@ The source code is formatted automatically using
 [gofmt](https://golang.org/cmd/gofmt/) tool:
 
 ```sh
-> go fmt
+> go fmt ./...
 ```
 
 ## References
